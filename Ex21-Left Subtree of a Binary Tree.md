@@ -8,7 +8,7 @@ To design and implement a Python program that constructs a binary tree from give
 2. 
 3. 
 4.  
-5.   
+   
 
 ## Program:
 ```
