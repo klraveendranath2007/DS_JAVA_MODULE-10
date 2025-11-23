@@ -1,5 +1,5 @@
 # Ex25 Finding the Fastest Route to a Charging Station using Dijkstra’s Algorithm
-## DATE:
+## DATE:10-11-2025
 ## AIM:
 To design and implement a Python program that helps an electric vehicle (EV) find the shortest travel time from its current block to the nearest charging station using Dijkstra’s shortest path algorithm.
 ## Algorithm
@@ -20,85 +20,68 @@ RegisterNumber:  212224060212
 
 import java.util.*;
 
-class Edge {
-    int to, weight;
-    Edge(int to, int weight) { this.to = to; this.weight = weight; }
-}
+public class EVChargingNavigation {
 
-public class FastestChargingRoute {
+    static class Pair {
+        int node, time;
+        Pair(int node, int time) {
+            this.node = node;
+            this.time = time;
+        }
+    }
 
-    static int[] dijkstra(List<List<Edge>> graph, int src) {
-        int n = graph.size();
+    static int findNearestChargingStation(int n, List<List<Pair>> graph, int source, Set<Integer> stations) {
         int[] dist = new int[n];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[src] = 0;
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
-        pq.add(new int[]{src, 0});
-        
+        dist[source] = 0;
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a.time));
+        pq.offer(new Pair(source, 0));
+
         while (!pq.isEmpty()) {
-            int[] curr = pq.poll();
-            int u = curr[0], d = curr[1];
-            if (d > dist[u]) continue;
-            for (Edge e : graph.get(u)) {
-                if (dist[u] + e.weight < dist[e.to]) {
-                    dist[e.to] = dist[u] + e.weight;
-                    pq.add(new int[]{e.to, dist[e.to]});
+            Pair current = pq.poll();
+            for (Pair neighbor : graph.get(current.node)) {
+                int newDist = dist[current.node] + neighbor.time;
+                if (newDist < dist[neighbor.node]) {
+                    dist[neighbor.node] = newDist;
+                    pq.offer(new Pair(neighbor.node, newDist));
                 }
             }
         }
-        return dist;
+
+        int minTime = Integer.MAX_VALUE;
+        for (int s : stations) {
+            if (dist[s] < minTime) minTime = dist[s];
+        }
+        return minTime == Integer.MAX_VALUE ? -1 : minTime;
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of blocks (nodes): ");
-        int n = sc.nextInt();
-        System.out.print("Enter number of roads (edges): ");
-        int m = sc.nextInt();
-        
-        List<List<Edge>> graph = new ArrayList<>();
+
+        int n = sc.nextInt(), m = sc.nextInt();
+        List<List<Pair>> graph = new ArrayList<>();
         for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-        
-        System.out.println("Enter roads as (u v travelTime) with 0-based indices:");
+
         for (int i = 0; i < m; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-            int w = sc.nextInt();
-            graph.get(u).add(new Edge(v, w));
-            graph.get(v).add(new Edge(u, w));
+            int u = sc.nextInt(), v = sc.nextInt(), w = sc.nextInt();
+            graph.get(u).add(new Pair(v, w));
+            graph.get(v).add(new Pair(u, w)); // Undirected
         }
 
-        System.out.print("Enter number of charging stations: ");
+        int source = sc.nextInt();
         int k = sc.nextInt();
-        int[] stations = new int[k];
-        System.out.println("Enter charging station nodes (0-based):");
-        for (int i = 0; i < k; i++) stations[i] = sc.nextInt();
+        Set<Integer> stations = new HashSet<>();
+        for (int i = 0; i < k; i++) stations.add(sc.nextInt());
 
-        System.out.print("Enter current block of EV (0-based): ");
-        int start = sc.nextInt();
-
-        int[] dist = dijkstra(graph, start);
-        int minDist = Integer.MAX_VALUE;
-        int nearestStation = -1;
-        for (int station : stations) {
-            if (dist[station] < minDist) {
-                minDist = dist[station];
-                nearestStation = station;
-            }
-        }
-
-        if (nearestStation == -1 || minDist == Integer.MAX_VALUE)
-            System.out.println("No reachable charging station.");
-        else
-            System.out.println("Nearest charging station: " + nearestStation + " with travel time: " + minDist);
-
-        sc.close();
+        System.out.println(findNearestChargingStation(n, graph, source, stations));
     }
 }
+
 ```
 
 ## Output:
-<img width="705" height="479" alt="image" src="https://github.com/user-attachments/assets/18706bd8-51cd-404d-83e1-1a913fc950c6" />
+<img width="349" height="363" alt="image" src="https://github.com/user-attachments/assets/2018eacb-6736-4e95-b5b3-4316da8536f8" />
 
 
 
