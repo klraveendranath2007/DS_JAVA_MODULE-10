@@ -1,5 +1,5 @@
 # Ex21 Count the Number of Nodes in the Left Subtree of a Binary Tree
-## DATE:
+## DATE:23-10-2025
 ## AIM:
 To design and implement a Python program that constructs a binary tree from given level order input and counts the number of nodes present in the left subtree of the root node
 
@@ -27,47 +27,60 @@ class Node {
     Node left, right;
     Node(int data) {
         this.data = data;
-        left = right = null;
+        this.left = this.right = null;
     }
 }
 
-public class LeftSubtreeCount {
-    public static Node insertLevelOrder(int[] arr, int i) {
-        if (i < arr.length) {
-            Node root = new Node(arr[i]);
-            root.left = insertLevelOrder(arr, 2 * i + 1);
-            root.right = insertLevelOrder(arr, 2 * i + 2);
-            return root;
+public class Main {
+
+    // Build binary tree in level-order fashion
+    static Node buildTree(int[] arr) {
+        if (arr.length == 0) return null;
+        Node root = new Node(arr[0]);
+        Queue<Node> q = new LinkedList<>();
+        q.add(root);
+        int i = 1;
+
+        while (!q.isEmpty() && i < arr.length) {
+            Node current = q.poll();
+            if (i < arr.length) {
+                current.left = new Node(arr[i++]);
+                q.add(current.left);
+            }
+            if (i < arr.length) {
+                current.right = new Node(arr[i++]);
+                q.add(current.right);
+            }
         }
-        return null;
+
+        return root;
     }
 
-    public static int countNodes(Node root) {
-        if (root == null)
-            return 0;
+    static int countNodes(Node root) {
+        if (root == null) return 0;
         return 1 + countNodes(root.left) + countNodes(root.right);
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of nodes: ");
         int n = sc.nextInt();
         int[] arr = new int[n];
-        System.out.println("Enter level order elements:");
-        for (int i = 0; i < n; i++)
-            arr[i] = sc.nextInt();
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+        Node root = buildTree(arr);
 
-        Node root = insertLevelOrder(arr, 0);
-        int leftCount = countNodes(root.left);
-        System.out.println("Number of nodes in left subtree: " + leftCount);
-        sc.close();
+        if (root.left == null) {
+            System.out.println(0);
+        } else {
+            System.out.println(countNodes(root.left));
+        }
     }
 }
+
 
 ```
 
 ## Output:
-<img width="522" height="213" alt="image" src="https://github.com/user-attachments/assets/9b58031d-57fa-4ae3-933a-4cc27a7d8588" />
+<img width="363" height="130" alt="image" src="https://github.com/user-attachments/assets/cdbc918e-d7d7-4554-b46b-a7ce8cae1893" />
 
 
 ## Result:
