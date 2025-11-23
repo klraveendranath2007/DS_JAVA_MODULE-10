@@ -1,5 +1,5 @@
 # Ex22 Searching for a Book ID in a Binary Search Tree (BST)
-## DATE:
+## DATE:27-10-2025
 ## AIM:
 To design and implement a Python program that constructs a Binary Search Tree (BST) using given Book IDs and checks whether a specific Book ID exists in the BST.
 ## Algorithm
@@ -22,62 +22,48 @@ RegisterNumber:  212224060212
 
 import java.util.*;
 
-class Node {
-    int data;
-    Node left, right;
-    Node(int data) {
-        this.data = data;
-        left = right = null;
+public class BookIDSearch {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int data) {
+            this.data = data;
+        }
     }
-}
 
-public class BookSearchBST {
-    public static Node insert(Node root, int data) {
-        if (root == null)
-            return new Node(data);
-        if (data < root.data)
-            root.left = insert(root.left, data);
-        else if (data > root.data)
-            root.right = insert(root.right, data);
+    public static Node insert(Node root, int key) {
+        if (root == null) return new Node(key);
+        if (key < root.data) root.left = insert(root.left, key);
+        else root.right = insert(root.right, key);
         return root;
     }
 
     public static boolean search(Node root, int key) {
-        if (root == null)
-            return false;
-        if (root.data == key)
-            return true;
-        if (key < root.data)
-            return search(root.left, key);
-        else
-            return search(root.right, key);
+        if (root == null) return false;
+        if (root.data == key) return true;
+        if (key < root.data) return search(root.left, key);
+        else return search(root.right, key);
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Node root = null;
-        System.out.print("Enter number of Book IDs: ");
         int n = sc.nextInt();
-        System.out.println("Enter Book IDs:");
+        Node root = null;
         for (int i = 0; i < n; i++) {
-            int id = sc.nextInt();
-            root = insert(root, id);
+            root = insert(root, sc.nextInt());
         }
-
-        System.out.print("Enter Book ID to search: ");
-        int key = sc.nextInt();
-
-        if (search(root, key))
-            System.out.println("Book ID found in the library system.");
-        else
-            System.out.println("Book ID not found in the library system.");
-        sc.close();
+        int q = sc.nextInt();
+        while (q-- > 0) {
+            int key = sc.nextInt();
+            System.out.println(search(root, key) ? "Found" : "Not Found");
+        }
     }
 }
 ```
 
 ## Output:
-<img width="561" height="232" alt="image" src="https://github.com/user-attachments/assets/ddbc0e14-d438-4df1-95df-84258a8509d6" />
+<img width="494" height="219" alt="image" src="https://github.com/user-attachments/assets/526e0abd-f53c-426c-b427-ae5d40ebbfe1" />
+
 
 
 
