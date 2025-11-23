@@ -1,5 +1,5 @@
 # Ex24 Shortest Path and Reachability in a Heritage Town using BFS
-## DATE:
+## DATE:06-11-2025
 ## AIM:
 To design and implement a Python program that, given a map of attractions in a heritage town connected by walking paths, recommends:
 The shortest number of paths (minimum hops) from a starting attraction to a target attraction.
@@ -24,77 +24,75 @@ RegisterNumber:  212224060212
 
 import java.util.*;
 
-public class HeritageTownBFS {
-    static List<List<Integer>> buildGraph(int n, int[][] edges) {
-        List<List<Integer>> g = new ArrayList<>();
-        for (int i = 0; i < n; i++) g.add(new ArrayList<>());
-        for (int[] e : edges) {
-            int u = e[0], v = e[1];
-            g.get(u).add(v);
-            g.get(v).add(u);
-        }
-        return g;
-    }
-
-    static int[] bfsDistances(List<List<Integer>> g, int src) {
-        int n = g.size();
+public class TouristNavigation {
+    
+    public static int bfs(List<List<Integer>> graph, int start, int target, int n) {
+        boolean[] visited = new boolean[n];
         int[] dist = new int[n];
-        Arrays.fill(dist, -1);
         Queue<Integer> q = new LinkedList<>();
-        dist[src] = 0;
-        q.add(src);
+        q.offer(start);
+        visited[start] = true;
+        dist[start] = 0;
+
         while (!q.isEmpty()) {
-            int u = q.poll();
-            for (int v : g.get(u)) {
-                if (dist[v] == -1) {
-                    dist[v] = dist[u] + 1;
-                    q.add(v);
+            int curr = q.poll();
+            if (curr == target) return dist[curr];
+            for (int neigh : graph.get(curr)) {
+                if (!visited[neigh]) {
+                    visited[neigh] = true;
+                    dist[neigh] = dist[curr] + 1;
+                    q.offer(neigh);
                 }
             }
         }
-        return dist;
+        return -1;
+    }
+
+    public static void dfs(List<List<Integer>> graph, boolean[] visited, int node) {
+        visited[node] = true;
+        for (int neighbor : graph.get(node)) {
+            if (!visited[neighbor]) {
+                dfs(graph, visited, neighbor);
+            }
+        }
+    }
+
+    public static int countReachable(boolean[] visited) {
+        int count = 0;
+        for (boolean v : visited) if (v) count++;
+        return count;
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of attractions (n): ");
-        int n = sc.nextInt();
-        System.out.print("Enter number of paths (m): ");
-        int m = sc.nextInt();
+        int n = sc.nextInt(), e = sc.nextInt();
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
 
-        System.out.println("Enter edges (u v) using 0-based indices, one per line:");
-        int[][] edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i][0] = sc.nextInt();
-            edges[i][1] = sc.nextInt();
+        for (int i = 0; i < e; i++) {
+            int u = sc.nextInt(), v = sc.nextInt();
+            graph.get(u).add(v);
+            graph.get(v).add(u);
         }
 
-        List<List<Integer>> graph = buildGraph(n, edges);
-
-        System.out.print("Enter start attraction (0-based): ");
         int start = sc.nextInt();
-        System.out.print("Enter target attraction (0-based): ");
         int target = sc.nextInt();
 
-        int[] dist = bfsDistances(graph, start);
+        int shortest = bfs(graph, start, target, n);
+        boolean[] visited = new boolean[n];
+        dfs(graph, visited, start);
+        int reachable = countReachable(visited);
 
-        int reachableCount = 0;
-        for (int d : dist) if (d != -1) reachableCount++;
-
-        System.out.println();
-        if (dist[target] == -1)
-            System.out.println("Target is unreachable from start.");
-        else
-            System.out.println("Shortest number of paths (minimum hops) from " + start + " to " + target + ": " + dist[target]);
-
-        System.out.println("Number of reachable attractions from " + start + ": " + reachableCount);
-        sc.close();
+        System.out.println("Shortest path from start to target: " + shortest);
+        System.out.println("Total reachable attractions from start: " + reachable);
     }
 }
+
 ```
 
 ## Output:
-<img width="614" height="509" alt="image" src="https://github.com/user-attachments/assets/591835f4-791e-4063-a6f5-ec19825d8e26" />
+<img width="1050" height="276" alt="image" src="https://github.com/user-attachments/assets/877eb73d-0956-41a7-86df-0f4a98f04cc0" />
+
 
 
 
